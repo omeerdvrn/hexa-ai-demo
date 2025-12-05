@@ -1,13 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, TextInput } from "react-native";
 const InputScreen = () => {
   const [prompt, setPrompt] = useState("");
-  const router = useRouter();
+  const [inputFocused, setInputFocused] = useState(false);
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Enter Your Prompt</Text>
+    <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+      <Text style={styles.promptLabel}>Enter Your Prompt</Text>
       <LinearGradient
         colors={["#2938DC", "#943DFF"]}
         start={{ x: 1, y: 0 }}
@@ -15,24 +14,20 @@ const InputScreen = () => {
         locations={[1, 0.25]}
         style={styles.gradientBackground}
       >
-        <View style={styles.darkOverlay}>
-          <TextInput
-            style={styles.input}
-            value={prompt}
-            onChangeText={setPrompt}
-            placeholder="A blue lion logo reading 'HEXA' in bold letters"
-            placeholderTextColor="rgba(255, 255, 255, 0.4)"
-            multiline
-          />
+        <TextInput
+          style={[styles.input, inputFocused && styles.inputFocused]}
+          value={prompt}
+          onChangeText={setPrompt}
+          placeholder="A blue lion logo reading 'HEXA' in bold letters"
+          placeholderTextColor="rgba(255, 255, 255, 0.4)"
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => setInputFocused(false)}
+          multiline
+        />
 
-          <Text style={styles.charCount}>{prompt.length}/500</Text>
-        </View>
+        <Text style={styles.charCount}>{prompt.length}/500</Text>
       </LinearGradient>
-
-      <Text style={styles.label} onPress={() => router.push("ai-logo/output")}>
-        Output
-      </Text>
-    </View>
+    </Pressable>
   );
 };
 
@@ -41,7 +36,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: "90%",
   },
-  label: {
+  promptLabel: {
     color: "#FFFFFF",
     fontSize: 20,
     fontWeight: "800",
@@ -52,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   darkOverlay: {
-    backgroundColor: "rgba(0,0,0,0.8)", // Gradient'in üzerine koyu katman
+    backgroundColor: "rgba(0,0,0,0.8)",
     borderRadius: 16,
     position: "relative",
     zIndex: 2,
@@ -60,10 +55,15 @@ const styles = StyleSheet.create({
   input: {
     color: "#FFFFFF",
     fontSize: 16,
+    borderRadius: 16,
     padding: 16,
     minHeight: 120,
     textAlignVertical: "top",
     height: 175,
+  },
+  inputFocused: {
+    borderWidth: "1",
+    borderColor: "white",
   },
   charCount: {
     position: "absolute",
@@ -71,6 +71,17 @@ const styles = StyleSheet.create({
     left: 16,
     color: "rgba(255, 255, 255, 0.3)",
     fontSize: 12,
+  },
+  logoStylesContainer: {
+    marginTop: 10,
+    backgroundColor: "gray",
+  },
+  logoStylesLabel: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "800",
+    marginBottom: 12,
+    marginTop: 12,
   },
 });
 
