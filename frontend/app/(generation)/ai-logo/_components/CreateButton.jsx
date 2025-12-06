@@ -1,5 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import MagicIcon from "./MagicIcon";
 
 const CreateButton = ({ onPress }) => {
   return (
@@ -12,7 +13,10 @@ const CreateButton = ({ onPress }) => {
         style={styles.createButtonGradient}
       >
         <TouchableOpacity style={styles.createButton} onPress={onPress}>
-          <Text style={styles.createButtonText}>Create</Text>
+          <View style={styles.createButtonContent}>
+            <Text style={styles.createButtonText}>Create</Text>
+            <MagicIcon />
+          </View>
         </TouchableOpacity>
       </LinearGradient>
     </View>
@@ -34,9 +38,15 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 50,
   },
+  createButtonContent: {
+    flexDirection: "row",
+    margin: "auto",
+  },
   createButtonText: {
     color: "white",
-    margin: "auto",
+    fontSize: 17,
+    fontWeight: "bold",
+    marginRight: 8,
   },
 });
 
