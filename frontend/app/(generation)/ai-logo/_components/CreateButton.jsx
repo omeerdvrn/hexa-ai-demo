@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const CreateButton = () => {
+const CreateButton = ({ onPress }) => {
   return (
     <View style={styles.createButtonContainer}>
       <LinearGradient
@@ -11,7 +11,7 @@ const CreateButton = () => {
         locations={[1, 0.25]}
         style={styles.createButtonGradient}
       >
-        <TouchableOpacity style={styles.createButton}>
+        <TouchableOpacity style={styles.createButton} onPress={onPress}>
           <Text style={styles.createButtonText}>Create</Text>
         </TouchableOpacity>
       </LinearGradient>

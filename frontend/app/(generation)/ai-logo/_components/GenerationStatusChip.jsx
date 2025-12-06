@@ -1,9 +1,7 @@
 import { useRouter } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
-import useGenerateLogo from "../_hooks/useGenerateLogo";
-const GenerationStatusChip = () => {
+const GenerationStatusChip = ({ data, progressData }) => {
   const router = useRouter();
-  const { data, progressData, setProgressData } = useGenerateLogo();
 
   return (
     <Pressable
@@ -16,7 +14,7 @@ const GenerationStatusChip = () => {
         marginTop: 10,
         marginBottom: 10,
       }}
-      onPress={() => router.push("ai-logo/output")}
+      onPress={() => router.push(`ai-logo/output/${progressData.jobId}`)}
     >
       <View
         style={{
@@ -35,7 +33,7 @@ const GenerationStatusChip = () => {
               borderBottomLeftRadius: 13.71,
             }}
             resizeMode="cover"
-            source={data[progressData.status].visualContent}
+            source={{ uri: data[progressData.status].visualContent }}
           />
         ) : (
           <View

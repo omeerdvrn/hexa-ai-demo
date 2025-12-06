@@ -1,13 +1,10 @@
+import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import usePromptInput from "../_hooks/usePromptInput";
-
-const PromptInput = () => {
-  const { focused, setFocused, prompt, setPrompt } = usePromptInput();
-
+const PromptInput = ({ prompt, setPrompt }) => {
+  const [focused, setFocused] = useState(false);
   return (
     <View>
       <Text style={styles.promptLabel}>Enter Your Prompt</Text>
-
       <TextInput
         style={[styles.input, focused && styles.inputFocused]}
         value={prompt}

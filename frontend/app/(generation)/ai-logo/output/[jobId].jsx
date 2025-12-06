@@ -1,12 +1,30 @@
 import gradient from "@/assets/images/background/gradient.png";
-import mockImage from "@/assets/images/mock-image.png";
 
-import { useRouter } from "expo-router";
+import fireStoreService from "@/services/fireStoreService";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
+
 const OutputScreen = () => {
+  const [job, setJob] = useState(null);
   const router = useRouter();
+
+  const { jobId } = useLocalSearchParams();
+
+  const { getJob } = fireStoreService;
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      const job = await getJob(jobId);
+      setJob(job);
+    };
+
+    fetchJob();
+  }, [getJob, setJob, jobId]);
+
+  console.log(jobId);
   return (
     <ImageBackground
       style={{ flex: 1, backgroundColor: "#09090B" }}
@@ -50,11 +68,13 @@ const OutputScreen = () => {
           </TouchableOpacity>
         </View>
         <View style={{ width: 342, height: 342, borderRadius: 16, marginBottom: 24 }}>
-          <Image
-            style={{ width: 342, height: 342, borderRadius: 16 }}
-            resizeMode={"contain"}
-            source={mockImage}
-          ></Image>
+          {job && (
+            <Image
+              style={{ width: 342, height: 342, borderRadius: 16 }}
+              resizeMode={"contain"}
+              source={{ uri: job.resultUrl }}
+            ></Image>
+          )}
         </View>
 
         <View style={{ backgroundColor: "#2C2835", padding: 12, borderRadius: 12 }}>
@@ -80,9 +100,7 @@ const OutputScreen = () => {
           </View>
 
           <View style={{ marginBottom: 10 }}>
-            <Text style={{ color: "white", fontSize: 16 }}>
-              A professional logo for Harrison & Co. Law Firm, using balanced serif fonts
-            </Text>
+            {job && <Text style={{ color: "white", fontSize: 16 }}>{job.prompt}</Text>}
           </View>
 
           <View
@@ -94,7 +112,11 @@ const OutputScreen = () => {
               paddingHorizontal: 5,
             }}
           >
-            <Text style={{ fontSize: 12, color: "white", fontWeight: "regular" }}>Monogram</Text>
+            {job && (
+              <Text style={{ fontSize: 12, color: "white", fontWeight: "regular" }}>
+                {job.style}
+              </Text>
+            )}
           </View>
         </View>
       </SafeAreaView>

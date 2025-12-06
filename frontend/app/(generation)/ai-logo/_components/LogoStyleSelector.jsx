@@ -1,8 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import useLogoStyleSelector from "../_hooks/useLogoStyleSelector";
 import LogoStyleCard from "./LogoStyleCard";
-const LogoStyleSelector = () => {
-  const { selectedStyleId, setSelectedStyleId, options } = useLogoStyleSelector();
+const LogoStyleSelector = ({ selectedStyleId, setSelectedStyleId, options }) => {
   return (
     <View style={styles.logoStylesContainer}>
       <Text style={styles.logoStylesLabel}>Logo Styles</Text>

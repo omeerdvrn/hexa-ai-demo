@@ -28,7 +28,7 @@ const GenerationImageLayout = () => {
       >
         <Stack.Screen name="input" />
         <Stack.Screen
-          name="output"
+          name="output/[jobId]"
           options={{
             headerShown: false,
           }}
