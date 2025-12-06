@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 const PromptInput = ({ prompt, setPrompt }) => {
   const [focused, setFocused] = useState(false);
+
   return (
     <View>
       <Text style={styles.promptLabel}>Enter Your Prompt</Text>
@@ -14,6 +15,9 @@ const PromptInput = ({ prompt, setPrompt }) => {
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         multiline
+        autoCorrect={false}
+        returnKeyType="done"
+        submitBehavior="blurAndSubmit"
       />
 
       <Text style={styles.charCount}>{prompt.length}/500</Text>

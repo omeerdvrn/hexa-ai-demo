@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import LogoStyleCard from "./LogoStyleCard";
 const LogoStyleSelector = ({ selectedStyleId, setSelectedStyleId, options }) => {
   return (
@@ -22,6 +22,8 @@ const LogoStyleSelector = ({ selectedStyleId, setSelectedStyleId, options }) => 
   );
 };
 
+const screenWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   logoStylesContainer: {
     marginTop: 15,
@@ -35,7 +37,9 @@ const styles = StyleSheet.create({
   },
   logoStylesList: {
     display: "flex",
-    overflow: "hidden",
+    width: screenWidth,
+    paddingLeft: 24,
+    marginLeft: -24,
   },
 });
 
