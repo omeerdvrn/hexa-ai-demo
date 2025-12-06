@@ -4,7 +4,7 @@ import { ImageBackground, StyleSheet } from "react-native";
 const GenerationImageLayout = () => {
   return (
     <ImageBackground
-      style={{ flex: 1, backgroundColor: "black" }}
+      style={{ flex: 1, backgroundColor: "#09090B" }}
       source={gradient}
       resizeMode="cover"
     >
@@ -25,7 +25,15 @@ const GenerationImageLayout = () => {
           },
           contentStyle: style.container,
         }}
-      />
+      >
+        <Stack.Screen name="input" />
+        <Stack.Screen
+          name="output"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
     </ImageBackground>
   );
 };

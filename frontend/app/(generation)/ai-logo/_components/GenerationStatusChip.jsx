@@ -1,7 +1,8 @@
+import { useRouter } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 import useGenerateLogo from "../_hooks/useGenerateLogo";
-
 const GenerationStatusChip = () => {
+  const router = useRouter();
   const { data, progressData, setProgressData } = useGenerateLogo();
 
   return (
@@ -15,7 +16,7 @@ const GenerationStatusChip = () => {
         marginTop: 10,
         marginBottom: 10,
       }}
-      onPress={() => setProgressData({ status: "failed" })}
+      onPress={() => router.push("ai-logo/output")}
     >
       <View
         style={{
