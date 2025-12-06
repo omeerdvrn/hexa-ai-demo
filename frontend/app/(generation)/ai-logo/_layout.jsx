@@ -1,34 +1,38 @@
+import gradient from "@/assets/images/background/gradient.png";
 import { Stack } from "expo-router";
-import { StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 const GenerationImageLayout = () => {
   return (
-    <Stack
-      initialRouteName="input"
-      screenOptions={{
-        headerShown: true,
-        headerShadowVisible: false,
-        headerBackVisible: false,
-        title: "AI Logo",
-        headerStyle: {
-          backgroundColor: "black",
-          border: "none",
-        },
-        headerTintColor: "#fff",
-        headerTitleStyle: {
-          fontWeight: "800",
-        },
-        contentStyle: style.container,
-      }}
+    <ImageBackground
+      style={{ flex: 1, backgroundColor: "black" }}
+      source={gradient}
+      resizeMode="cover"
     >
-      <Stack.Screen name="input" />
-      <Stack.Screen name="output" />
-    </Stack>
+      <Stack
+        initialRouteName="input"
+        screenOptions={{
+          headerShown: true,
+          headerShadowVisible: false,
+          headerBackVisible: false,
+          title: "AI Logo",
+          headerStyle: {
+            backgroundColor: "transparent",
+            border: "none",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "800",
+          },
+          contentStyle: style.container,
+        }}
+      />
+    </ImageBackground>
   );
 };
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: "black",
+    backgroundColor: "transparent",
   },
 });
 
