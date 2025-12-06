@@ -20,14 +20,14 @@ const CreateButton = () => {
 };
 
 const styles = StyleSheet.create({
-  createButtonGradient: {
-    borderRadius: 50,
-  },
   createButtonContainer: {
     position: "absolute",
     bottom: 10,
     width: "100%",
-    marginLeft: 10,
+    left: 24,
+  },
+  createButtonGradient: {
+    borderRadius: 50,
   },
   createButton: {
     color: "white",
