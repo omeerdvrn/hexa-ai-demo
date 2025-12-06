@@ -18,6 +18,7 @@ const LogoStyleSelector = () => {
           />
         )}
         horizontal
+        showsHorizontalScrollIndicator={false}
       ></FlatList>
     </View>
   );
@@ -25,7 +26,7 @@ const LogoStyleSelector = () => {
 
 const styles = StyleSheet.create({
   logoStylesContainer: {
-    marginTop: 10,
+    marginTop: 15,
   },
   logoStylesLabel: {
     color: "#FFFFFF",
