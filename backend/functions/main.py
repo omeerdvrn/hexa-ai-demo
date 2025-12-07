@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from firebase_functions import firestore_fn, scheduler_fn, options
 from firebase_admin import initialize_app, firestore, auth
 from dotenv import load_dotenv
-from utils import validate_job_data, generate_mock_image_url
+from utils import validate_job_data, generate_and_store_logo
 
 load_dotenv()
 
@@ -40,7 +40,7 @@ def process_job(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> Non
             })
             return
         
-        result = generate_mock_image_url(job_id, job_data["prompt"])
+        result = generate_and_store_logo(job_id, job_data["prompt"])
         
         status = "failed" if result.get("error") else "completed"
         
