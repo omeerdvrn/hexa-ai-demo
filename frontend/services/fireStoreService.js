@@ -23,7 +23,7 @@ const firestoreService = {
         userId,
         status: JobStatus.PROCESSING,
         prompt: jobData.prompt,
-        style: jobData.style || "default",
+        style: jobData.style || 0,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         resultUrl: null,

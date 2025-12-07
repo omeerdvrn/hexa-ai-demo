@@ -12,7 +12,7 @@ const useGenerateLogo = () => {
   const [progressData, setProgressData] = useState({ status: JobStatus.IDLE });
   const [prompt, setPrompt] = useState("");
   const [selectedStyleId, setSelectedStyleId] = useState(0);
-  const { createJob, subscribeToJob } = fireStoreService;
+  const { createJob, subscribeToJob, getLatestJob } = fireStoreService;
   const unsubscribeRef = useRef(null);
 
   const { userId } = useAuth();
@@ -62,6 +62,40 @@ const useGenerateLogo = () => {
     ],
     [],
   );
+
+  const retrySubmitGenerateLogoRequest = async () => {
+    const lastJob = await getLatestJob(userId);
+
+    const jobData = {
+      prompt: lastJob.prompt,
+      style: lastJob.style,
+    };
+
+    try {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+
+      const newJobId = await createJob(userId, jobData);
+      setJobId(newJobId);
+      setPrompt("");
+
+      unsubscribeRef.current = subscribeToJob(newJobId, (jobData, error) => {
+        if (!jobData || error) {
+          setProgressData({ status: JobStatus.FAILED });
+          return;
+        }
+
+        setProgressData({
+          jobId: newJobId,
+          ...jobData,
+        });
+      });
+    } catch (_err) {
+      Alert.alert("Something went wrong!");
+    }
+  };
 
   const submitGenerateLogoRequest = useCallback(async () => {
     if (progressData.status === JobStatus.PROCESSING) {
@@ -119,6 +153,7 @@ const useGenerateLogo = () => {
     setSelectedStyleId,
     data,
     styleOptions,
+    retrySubmitGenerateLogoRequest,
     submitGenerateLogoRequest,
   };
 };

@@ -15,12 +15,17 @@ const InputScreen = () => {
     setSelectedStyleId,
     data,
     styleOptions,
+    retrySubmitGenerateLogoRequest,
     submitGenerateLogoRequest,
   } = useGenerateLogo();
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
       {progressData.status !== JobStatus.IDLE && (
-        <GenerationStatusChip data={data} progressData={progressData} />
+        <GenerationStatusChip
+          data={data}
+          progressData={progressData}
+          retryCallback={retrySubmitGenerateLogoRequest}
+        />
       )}
       <PromptInput prompt={prompt} setPrompt={setPrompt} lengthLimit={500} />
       <LogoStyleSelector

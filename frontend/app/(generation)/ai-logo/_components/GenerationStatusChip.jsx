@@ -2,9 +2,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 import { JobStatus } from "../../../../constants";
+
 import ErrorIcon from "./ErrorIcon";
 
-const GenerationStatusChip = ({ data, progressData }) => {
+const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
   const router = useRouter();
   const statusConfig = data[progressData.status];
 
@@ -58,7 +59,7 @@ const GenerationStatusChip = ({ data, progressData }) => {
 
   const handlePress = () => {
     if (progressData.status === JobStatus.FAILED && progressData.jobId) {
-      console.log("retry");
+      retryCallback();
     }
     if (progressData.status === JobStatus.COMPLETED && progressData.jobId) {
       router.push(`ai-logo/output/${progressData.jobId}`);
