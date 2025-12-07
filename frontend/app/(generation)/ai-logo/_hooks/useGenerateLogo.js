@@ -1,8 +1,5 @@
-import abstract from "@/assets/images/logo-styles/abstract.png";
-import mascot from "@/assets/images/logo-styles/mascot.png";
-import monogram from "@/assets/images/logo-styles/monogram.png";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { JOB_STATUS_CONFIG, LogoStyleName } from "../../../../constants";
+import { JOB_STATUS_CONFIG, LOGO_STYLE_OPTIONS } from "../../../../constants";
 import useJobManager from "./useJobManager";
 
 const useGenerateLogo = () => {
@@ -36,34 +33,7 @@ const useGenerateLogo = () => {
     };
   }, [progressData.resultUrl]);
 
-  const styleOptions = useMemo(
-    () => [
-      {
-        id: 0,
-        name: LogoStyleName[0],
-        image: null,
-      },
-      {
-        id: 1,
-        name: LogoStyleName[1],
-        imageUrl: "",
-        image: monogram,
-      },
-      {
-        id: 2,
-        name: LogoStyleName[2],
-        imageUrl: "",
-        image: abstract,
-      },
-      {
-        id: 3,
-        name: LogoStyleName[3],
-        imageUrl: "",
-        image: mascot,
-      },
-    ],
-    [],
-  );
+  const styleOptions = LOGO_STYLE_OPTIONS;
 
   const retrySubmitGenerateLogoRequest = useCallback(async () => {
     const newJobId = await retryLastJob();
