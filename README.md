@@ -480,12 +480,6 @@ npm run typecheck   # TypeScript type validation
 npm run format      # Prettier code formatting
 ```
 
-### Backend Testing
-
-```bash
-cd backend/functions
-python -m pytest   # Run test suite (if configured)
-```
 
 ## 🚀 Deployment
 
