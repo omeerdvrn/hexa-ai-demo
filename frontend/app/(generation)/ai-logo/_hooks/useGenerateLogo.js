@@ -5,11 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import fireStoreService from "@/services/fireStoreService";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert } from "react-native";
+import { JobStatus, LogoStyleName } from "../../../../constants";
 import ErrorIcon from "../_components/ErrorIcon";
 
 const useGenerateLogo = () => {
   const [jobId, setJobId] = useState("");
-  const [progressData, setProgressData] = useState({ status: "idle" });
+  const [progressData, setProgressData] = useState({ status: JobStatus.IDLE });
   const [prompt, setPrompt] = useState("");
   const [selectedStyleId, setSelectedStyleId] = useState(0);
   const { createJob, subscribeToJob } = fireStoreService;
@@ -18,7 +19,7 @@ const useGenerateLogo = () => {
   const { userId } = useAuth();
 
   const data = {
-    inProgress: {
+    processing: {
       title: "Creating Your Design...",
       message: "Ready in 2 minutes",
       messageColor: "#71717A",
@@ -50,30 +51,29 @@ const useGenerateLogo = () => {
   const styleOptions = [
     {
       id: 0,
-      name: "No Style",
+      name: LogoStyleName[0],
       image: null,
     },
     {
       id: 1,
-      name: "Monogram",
+      name: LogoStyleName[1],
       imageUrl: "",
       image: monogram,
     },
     {
       id: 2,
-      name: "Abstract",
+      name: LogoStyleName[2],
       imageUrl: "",
       image: abstract,
     },
     {
       id: 3,
-      name: "Mascot",
+      name: LogoStyleName[3],
       imageUrl: "",
       image: mascot,
     },
   ];
 
-  // Cleanup subscription on unmount
   useEffect(() => {
     return () => {
       if (unsubscribeRef.current) {
@@ -84,12 +84,7 @@ const useGenerateLogo = () => {
   }, []);
 
   const submitGenerateLogoRequest = async () => {
-    if (true) {
-      console.log(userId);
-    }
-
-    // Prevent creating a new job if there's already a processing job
-    if (progressData.status === "processing") {
+    if (progressData.status === JobStatus.PROCESSING) {
       Alert.alert("Please wait", "A job is already in progress. Please wait for it to complete.");
       return;
     }
@@ -100,7 +95,6 @@ const useGenerateLogo = () => {
     };
 
     try {
-      // Clean up previous subscription if exists (only when creating a new job)
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
         unsubscribeRef.current = null;
@@ -108,41 +102,22 @@ const useGenerateLogo = () => {
 
       const newJobId = await createJob(userId, jobData);
       setJobId(newJobId);
-      console.log(newJobId);
+      setPrompt("");
 
-      // Subscribe to job updates
       unsubscribeRef.current = subscribeToJob(newJobId, (jobData, error) => {
-        if (error) {
-          setProgressData({ status: "failed" });
+        if (!jobData || error) {
+          setProgressData({ status: JobStatus.FAILED });
           return;
         }
 
-        if (!jobData) {
-          setProgressData({ status: "failed" });
-          return;
-        }
-
-        // Update progress based on job status
-        if (jobData.status === "completed") {
-          setProgressData({
-            jobId: newJobId,
-            status: "completed",
-            resultUrl: jobData.resultUrl,
-          });
-        } else if (jobData.status === "failed" || jobData.error) {
-          setProgressData({ status: "failed" });
-        } else {
-          setProgressData({ status: "inProgress" });
-        }
+        setProgressData({
+          jobId: newJobId,
+          ...jobData,
+        });
       });
     } catch (_err) {
       Alert.alert("Something went wrong!");
     }
-
-    console.log("submit", {
-      prompt,
-      selectedStyleId,
-    });
   };
   return {
     jobId,

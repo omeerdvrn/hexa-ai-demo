@@ -1,11 +1,11 @@
 import gradient from "@/assets/images/background/gradient.png";
-
 import fireStoreService from "@/services/fireStoreService";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
+import { LogoStyleName } from "../../../../constants";
 
 const OutputScreen = () => {
   const [job, setJob] = useState(null);
@@ -114,7 +114,7 @@ const OutputScreen = () => {
           >
             {job && (
               <Text style={{ fontSize: 12, color: "white", fontWeight: "regular" }}>
-                {job.style}
+                {LogoStyleName[job.style]}
               </Text>
             )}
           </View>

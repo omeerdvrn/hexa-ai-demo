@@ -12,17 +12,16 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
-
-const JOBS_COLLECTION = "jobs";
+import { Collections, JobStatus } from "../constants";
 
 const firestoreService = {
   createJob: async (userId, jobData) => {
     try {
-      const jobRef = doc(collection(db, JOBS_COLLECTION));
+      const jobRef = doc(collection(db, Collections.JOBS));
       const job = {
         id: jobRef.id,
         userId,
-        status: "processing",
+        status: JobStatus.PROCESSING,
         prompt: jobData.prompt,
         style: jobData.style || "default",
         createdAt: serverTimestamp(),
@@ -41,7 +40,7 @@ const firestoreService = {
   },
   getJob: async (jobId) => {
     try {
-      const jobRef = doc(db, JOBS_COLLECTION, jobId);
+      const jobRef = doc(db, Collections.JOBS, jobId);
       const jobSnap = await getDoc(jobRef);
 
       if (jobSnap.exists()) {
@@ -58,7 +57,7 @@ const firestoreService = {
   getUserJobs: async (userId, limitCount = 10) => {
     try {
       const q = query(
-        collection(db, JOBS_COLLECTION),
+        collection(db, Collections.JOBS),
         where("userId", "==", userId),
         orderBy("createdAt", "desc"),
         limit(limitCount),
@@ -78,7 +77,7 @@ const firestoreService = {
   },
 
   subscribeToJob: (jobId, callback) => {
-    const jobRef = doc(db, JOBS_COLLECTION, jobId);
+    const jobRef = doc(db, Collections.JOBS, jobId);
 
     const unsubscribe = onSnapshot(
       jobRef,
@@ -101,7 +100,7 @@ const firestoreService = {
   getLatestJob: async (userId) => {
     try {
       const q = query(
-        collection(db, JOBS_COLLECTION),
+        collection(db, Collections.JOBS),
         where("userId", "==", userId),
         orderBy("createdAt", "desc"),
         limit(1),

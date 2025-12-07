@@ -1,4 +1,5 @@
 import { Keyboard, Pressable, StyleSheet } from "react-native";
+import { JobStatus } from "../../../constants";
 import CreateButton from "./_components/CreateButton";
 import GenerationStatusChip from "./_components/GenerationStatusChip";
 import LogoStyleSelector from "./_components/LogoStyleSelector";
@@ -18,7 +19,7 @@ const InputScreen = () => {
   } = useGenerateLogo();
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-      {progressData.status !== "idle" && (
+      {progressData.status !== JobStatus.IDLE && (
         <GenerationStatusChip data={data} progressData={progressData} />
       )}
       <PromptInput prompt={prompt} setPrompt={setPrompt} />
