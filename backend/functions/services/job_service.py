@@ -26,7 +26,6 @@ class JobService:
         if not job_data.get("userId"):
             return False, "Missing userId"
         
-        # Validate job type (only support logo for now, allow None for backward compatibility)
         job_type = job_data.get("type")
         if job_type is not None and job_type != "logo":
             return False, f"Unsupported job type: {job_type}. Only 'logo' is currently supported."
@@ -51,9 +50,12 @@ class JobService:
             
             job_type = job_data.get("type", "logo")
             
-            # Only handle logo generation for now
             if job_type == "logo":
                 result = self.image_service.generate_and_store_logo(job_id, job_data["prompt"])
+                
+                if not result.get("error") and result.get("resultUrl"):
+                    self._create_logo_document(job_id, job_data, result)
+                    
             else:
                 return self._create_error_result(f"Unsupported job type: {job_type}")
             
@@ -88,6 +90,33 @@ class JobService:
             self.db.collection("jobs").document(job_id).update(update_data)
             
         except Exception:
+            pass
+    
+    def _create_logo_document(self, job_id: str, job_data: Dict[str, Any], result: Dict[str, Any]) -> None:
+        """
+        Create a logo document in the logos collection
+        
+        Args:
+            job_id: Unique identifier for the job
+            job_data: Original job data
+            result: Generation result with storage URL
+        """
+        try:
+            logo_data = {
+                "jobId": job_id,
+                "userId": job_data.get("userId"),
+                "prompt": job_data.get("prompt"),
+                "style": job_data.get("style", 0),
+                "storageUrl": result.get("resultUrl"),
+                "createdAt": firestore.SERVER_TIMESTAMP,
+                "updatedAt": firestore.SERVER_TIMESTAMP,
+            }
+            
+            logo_ref = self.db.collection("logos").document()
+            logo_data["id"] = logo_ref.id
+            logo_ref.set(logo_data)
+            
+        except Exception as e:
             pass
     
     def _create_error_result(self, error_message: str) -> Dict[str, Any]:

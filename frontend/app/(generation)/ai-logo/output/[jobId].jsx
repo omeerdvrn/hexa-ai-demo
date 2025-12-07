@@ -1,4 +1,5 @@
 import gradient from "@/assets/images/background/gradient.png";
+import { LogoStyleName } from "@/constants";
 import fireStoreService from "@/services/fireStoreService";
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -6,30 +7,33 @@ import { useEffect, useState } from "react";
 import { Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
-import { LogoStyleName } from "@/constants";
 
 const OutputScreen = () => {
-  const [job, setJob] = useState(null);
+  const [logo, setLogo] = useState(null);
   const router = useRouter();
 
   const { jobId } = useLocalSearchParams();
 
-  const { getJob } = fireStoreService;
+  const { getLogoByJobId } = fireStoreService;
 
   const copyToClipboard = async () => {
-    if (job?.prompt) {
-      await Clipboard.setStringAsync(job.prompt);
+    if (logo?.prompt) {
+      await Clipboard.setStringAsync(logo.prompt);
     }
   };
 
   useEffect(() => {
-    const fetchJob = async () => {
-      const job = await getJob(jobId);
-      setJob(job);
+    const fetchLogo = async () => {
+      try {
+        const logoData = await getLogoByJobId(jobId);
+        setLogo(logoData);
+      } catch (error) {
+        console.error("Error fetching logo:", error);
+      }
     };
 
-    fetchJob();
-  }, [getJob, setJob, jobId]);
+    fetchLogo();
+  }, [getLogoByJobId, jobId]);
 
   console.log(jobId);
   return (
@@ -75,11 +79,11 @@ const OutputScreen = () => {
           </TouchableOpacity>
         </View>
         <View style={{ width: 342, height: 342, borderRadius: 16, marginBottom: 24 }}>
-          {job && (
+          {logo && (
             <Image
               style={{ width: 342, height: 342, borderRadius: 16 }}
               resizeMode={"contain"}
-              source={{ uri: job.resultUrl }}
+              source={{ uri: logo.storageUrl }}
             ></Image>
           )}
         </View>
@@ -107,7 +111,7 @@ const OutputScreen = () => {
           </View>
 
           <View style={{ marginBottom: 10 }}>
-            {job && <Text style={{ color: "white", fontSize: 16 }}>{job.prompt}</Text>}
+            {logo && <Text style={{ color: "white", fontSize: 16 }}>{logo.prompt}</Text>}
           </View>
 
           <View
@@ -119,9 +123,9 @@ const OutputScreen = () => {
               paddingHorizontal: 5,
             }}
           >
-            {job && (
+            {logo && (
               <Text style={{ fontSize: 12, color: "white", fontWeight: "regular" }}>
-                {LogoStyleName[job.style]}
+                {LogoStyleName[logo.style]}
               </Text>
             )}
           </View>
