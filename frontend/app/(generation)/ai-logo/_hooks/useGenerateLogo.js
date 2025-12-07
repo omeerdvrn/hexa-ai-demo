@@ -63,15 +63,6 @@ const useGenerateLogo = () => {
     [],
   );
 
-  useEffect(() => {
-    return () => {
-      if (unsubscribeRef.current) {
-        unsubscribeRef.current();
-        unsubscribeRef.current = null;
-      }
-    };
-  }, []);
-
   const submitGenerateLogoRequest = useCallback(async () => {
     if (progressData.status === JobStatus.PROCESSING) {
       Alert.alert("Please wait", "A job is already in progress. Please wait for it to complete.");
@@ -108,6 +99,16 @@ const useGenerateLogo = () => {
       Alert.alert("Something went wrong!");
     }
   }, [progressData.status, prompt, selectedStyleId, userId, createJob, subscribeToJob]);
+
+  useEffect(() => {
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, []);
+
   return {
     jobId,
     progressData,

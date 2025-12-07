@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { getRandomPrompt } from "../../../../constants";
 const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
   const [focused, setFocused] = useState(false);
 
@@ -9,9 +10,34 @@ const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
     }
   };
 
+  const surpriseMe = () => {
+    const randomPrompt = getRandomPrompt();
+    setPrompt(randomPrompt);
+  };
+
   return (
     <View>
-      <Text style={styles.promptLabel}>Enter Your Prompt</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginVertical: 12,
+          alignItems: "center",
+        }}
+      >
+        <Text style={styles.promptLabel}>Enter Your Prompt</Text>
+        <TouchableOpacity onPress={surpriseMe}>
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontSize: 13,
+              fontWeight: "thin",
+            }}
+          >
+            🎲 Surprise me
+          </Text>
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={[styles.input, focused && styles.inputFocused]}
         value={prompt}
@@ -38,8 +64,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 20,
     fontWeight: "800",
-    marginBottom: 12,
-    marginTop: 12,
   },
   gradientBackground: {
     borderRadius: 16,
