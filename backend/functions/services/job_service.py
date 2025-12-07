@@ -25,12 +25,17 @@ class JobService:
         
         if not job_data.get("userId"):
             return False, "Missing userId"
+        
+        # Validate job type (only support logo for now, allow None for backward compatibility)
+        job_type = job_data.get("type")
+        if job_type is not None and job_type != "logo":
+            return False, f"Unsupported job type: {job_type}. Only 'logo' is currently supported."
 
         return True, None
     
     def process_job(self, job_id: str, job_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Process a job by generating and storing the logo
+        Process a job based on its type
         
         Args:
             job_id: Unique identifier for the job
@@ -44,7 +49,14 @@ class JobService:
             if not is_valid:
                 return self._create_error_result(error_message)
             
-            result = self.image_service.generate_and_store_logo(job_id, job_data["prompt"])
+            job_type = job_data.get("type", "logo")
+            
+            # Only handle logo generation for now
+            if job_type == "logo":
+                result = self.image_service.generate_and_store_logo(job_id, job_data["prompt"])
+            else:
+                return self._create_error_result(f"Unsupported job type: {job_type}")
+            
             return result
             
         except Exception as e:

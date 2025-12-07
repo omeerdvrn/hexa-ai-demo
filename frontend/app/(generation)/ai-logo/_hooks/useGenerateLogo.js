@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { JOB_STATUS_CONFIG, LOGO_STYLE_OPTIONS } from "@/constants";
+import { JOB_STATUS_CONFIG, LOGO_STYLE_OPTIONS, JobType } from "@/constants";
 import { useJobManager } from "@/hooks";
 
 const useGenerateLogo = () => {
@@ -44,6 +44,7 @@ const useGenerateLogo = () => {
 
   const submitGenerateLogoRequest = useCallback(async () => {
     const jobData = {
+      type: JobType.LOGO,
       prompt,
       style: selectedStyleId,
     };

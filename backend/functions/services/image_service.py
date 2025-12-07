@@ -41,7 +41,7 @@ class ImageService:
         except Exception:
             raise
     
-    def store_image_from_url(self, image_url: str, job_id: str) -> Dict[str, Any]:
+    def store_image_from_url(self, image_url: str, job_id: str, job_type: str) -> Dict[str, Any]:
         """
         Download and store image from URL to Firebase Storage
         
@@ -57,7 +57,7 @@ class ImageService:
             response.raise_for_status()
             image_data = response.content
             
-            storage_result = self._upload_to_storage(image_data, job_id)
+            storage_result = self._upload_to_storage(image_data, job_id, job_type)
             return storage_result
             
         except requests.RequestException as e:
@@ -82,18 +82,19 @@ class ImageService:
         try:
             ai_image_url = self.generate_mock_image_url(job_id, prompt)
             
-            result = self.store_image_from_url(ai_image_url, job_id)
+            result = self.store_image_from_url(ai_image_url, job_id, "logo")
             return result
             
         except Exception as e:
             error_msg = f"Logo generation pipeline failed: {str(e)}"
             return self._create_error_result(error_msg)
     
-    def _upload_to_storage(self, image_data: bytes, job_id: str) -> Dict[str, Any]:
+    
+    def _upload_to_storage(self, image_data: bytes, job_id: str, job_type: str) -> Dict[str, Any]:
         """Upload image data to Firebase Storage"""
         try:
             bucket = storage.bucket()
-            blob_path = f"logos/{job_id}.png"
+            blob_path = f"{job_type}s/{job_id}.png"
             blob = bucket.blob(blob_path)
             
             blob.upload_from_string(image_data, content_type="image/png")
@@ -120,7 +121,7 @@ class ImageService:
     def _should_simulate_failure(self) -> bool:
         """Determine if generation should fail (for testing purposes)"""
         fail_percentage = random.randint(1, 10)
-        return fail_percentage < 3 
+        return fail_percentage < 3
     
     def _create_error_result(self, error_message: str) -> Dict[str, Any]:
         """Create standardized error result"""
