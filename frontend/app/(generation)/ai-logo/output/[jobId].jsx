@@ -1,5 +1,6 @@
 import gradient from "@/assets/images/background/gradient.png";
 import fireStoreService from "@/services/fireStoreService";
+import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
@@ -14,6 +15,12 @@ const OutputScreen = () => {
   const { jobId } = useLocalSearchParams();
 
   const { getJob } = fireStoreService;
+
+  const copyToClipboard = async () => {
+    if (job?.prompt) {
+      await Clipboard.setStringAsync(job.prompt);
+    }
+  };
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -80,7 +87,7 @@ const OutputScreen = () => {
         <View style={{ backgroundColor: "#2C2835", padding: 12, borderRadius: 12 }}>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
             <Text style={{ color: "white", fontSize: 15, fontWeight: "bold" }}>Prompt</Text>
-            <View style={{ flexDirection: "row", gap: 2 }}>
+            <TouchableOpacity style={{ flexDirection: "row", gap: 2 }} onPress={copyToClipboard}>
               <Svg width={16} height={16} viewBox="0 0 16 16" fill="none">
                 <Path
                   d="M10.6666 8.60004V11.4C10.6666 13.7334 9.73325 14.6667 7.39992 14.6667H4.59992C2.26659 14.6667 1.33325 13.7334 1.33325 11.4V8.60004C1.33325 6.26671 2.26659 5.33337 4.59992 5.33337H7.39992C9.73325 5.33337 10.6666 6.26671 10.6666 8.60004Z"
@@ -96,7 +103,7 @@ const OutputScreen = () => {
                 />
               </Svg>
               <Text style={{ color: "#A1A1AA", fontSize: 11, fontWeight: "regular" }}>Copy</Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
           <View style={{ marginBottom: 10 }}>
