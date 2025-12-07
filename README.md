@@ -39,7 +39,7 @@ The app follows an event-driven architecture, strictly separating frontend conce
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/omeerdvrn/hexa-ai-demo
 cd hexa-ai-demo
 
 # Install frontend dependencies
