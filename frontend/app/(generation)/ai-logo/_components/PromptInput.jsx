@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-const PromptInput = ({ prompt, setPrompt }) => {
+const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
   const [focused, setFocused] = useState(false);
+
+  const setPromptWithLengthLimit = (newPrompt) => {
+    if (newPrompt.length <= lengthLimit) {
+      setPrompt(newPrompt);
+    }
+  };
 
   return (
     <View>
@@ -9,7 +15,7 @@ const PromptInput = ({ prompt, setPrompt }) => {
       <TextInput
         style={[styles.input, focused && styles.inputFocused]}
         value={prompt}
-        onChangeText={setPrompt}
+        onChangeText={setPromptWithLengthLimit}
         placeholder="A blue lion logo reading 'HEXA' in bold letters"
         placeholderTextColor="rgba(255, 255, 255, 0.4)"
         onFocus={() => setFocused(true)}
@@ -20,7 +26,9 @@ const PromptInput = ({ prompt, setPrompt }) => {
         submitBehavior="blurAndSubmit"
       />
 
-      <Text style={styles.charCount}>{prompt.length}/500</Text>
+      <Text style={styles.charCount}>
+        {prompt.length}/{lengthLimit}
+      </Text>
     </View>
   );
 };
@@ -41,10 +49,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 16,
     padding: 16,
-    minHeight: 120,
+    minHeight: 175,
     textAlignVertical: "top",
-    height: 175,
+    height: "auto",
     backgroundColor: "#2A2834",
+    paddingBottom: 28,
   },
   inputFocused: {
     borderWidth: "1",

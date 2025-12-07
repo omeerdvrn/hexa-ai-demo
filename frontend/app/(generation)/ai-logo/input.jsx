@@ -22,7 +22,7 @@ const InputScreen = () => {
       {progressData.status !== JobStatus.IDLE && (
         <GenerationStatusChip data={data} progressData={progressData} />
       )}
-      <PromptInput prompt={prompt} setPrompt={setPrompt} />
+      <PromptInput prompt={prompt} setPrompt={setPrompt} lengthLimit={500} />
       <LogoStyleSelector
         selectedStyleId={selectedStyleId}
         setSelectedStyleId={setSelectedStyleId}
