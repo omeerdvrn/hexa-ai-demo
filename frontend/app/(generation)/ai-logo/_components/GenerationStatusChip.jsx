@@ -1,9 +1,10 @@
+import Loader from "@/components/Loader";
+import { JobStatus } from "@/constants";
 import { useTheme } from "@/contexts/ThemeContext";
 import { jobService } from "@/services";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
-import { JobStatus } from "@/constants";
+import { Image, Pressable, Text, View } from "react-native";
 
 import ErrorIcon from "./ErrorIcon";
 
@@ -37,7 +38,7 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
               justifyContent: "center",
             }}
           >
-            <ActivityIndicator size="small" color="white" />
+            <Loader />
           </View>
         );
       case "error":
