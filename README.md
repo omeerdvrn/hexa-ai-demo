@@ -160,12 +160,6 @@ npm run typecheck   # TypeScript type validation
 npm run format      # Prettier code formatting
 ```
 
-### Backend Testing
-
-```bash
-cd backend/functions
-python -m pytest   # Run test suite (if configured)
-```
 - **Real-time Generation Workflow:** Handles `Idle` -> `Processing` -> `Done/Failed` states using Firestore listeners.
 - **Surprise Me Feature:** Random prompt selection from curated preset list for quick logo generation.
 - **Multiple Logo Styles:** Support for No Style, Monogram, Abstract, and Mascot style options.
