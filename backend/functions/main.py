@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from firebase_functions import firestore_fn, scheduler_fn, options
 from firebase_admin import initialize_app, firestore, auth
 from dotenv import load_dotenv
-from utils import validate_job_data, generate_and_store_logo
+from services import JobService
 
 load_dotenv()
 
@@ -22,6 +22,7 @@ def get_firestore_client():
 )
 def process_job(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
     db = get_firestore_client()
+    job_service = JobService(db)
     
     try:
         job_data = event.data.to_dict()
@@ -30,25 +31,9 @@ def process_job(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> Non
         if not job_data:
             return
         
+        result = job_service.process_job(job_id, job_data)
         
-        is_valid, error_message = validate_job_data(job_data)
-        if not is_valid:
-            db.collection("jobs").document(job_id).update({
-                "status": "failed",
-                "error": error_message,
-                "updatedAt": firestore.SERVER_TIMESTAMP
-            })
-            return
+        job_service.update_job_status(job_id, result)
         
-        result = generate_and_store_logo(job_id, job_data["prompt"])
-        
-        status = "failed" if result.get("error") else "completed"
-        
-        db.collection("jobs").document(job_id).update({
-            "status": status,
-            "resultUrl": result.get("resultUrl"),
-            "error": result.get("error"),
-            "updatedAt": firestore.SERVER_TIMESTAMP
-        })
     except Exception:
         pass
