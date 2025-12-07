@@ -3,10 +3,9 @@ import mascot from "@/assets/images/logo-styles/mascot.png";
 import monogram from "@/assets/images/logo-styles/monogram.png";
 import { useAuth } from "@/contexts/AuthContext";
 import fireStoreService from "@/services/fireStoreService";
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert } from "react-native";
-import { JobStatus, LogoStyleName } from "../../../../constants";
-import ErrorIcon from "../_components/ErrorIcon";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Alert } from "react-native";
+import { JOB_STATUS_CONFIG, JobStatus, LogoStyleName } from "../../../../constants";
 
 const useGenerateLogo = () => {
   const [jobId, setJobId] = useState("");
@@ -18,61 +17,51 @@ const useGenerateLogo = () => {
 
   const { userId } = useAuth();
 
-  const data = {
-    processing: {
-      title: "Creating Your Design...",
-      message: "Ready in 2 minutes",
-      messageColor: "#71717A",
-      messageBackgroundColor: "#2D2935",
-      visualContentType: "icon",
-      visualContent: <ActivityIndicator size={"small"} color={"white"}></ActivityIndicator>,
-      visualContentBackgroundColor: "#18181B",
-    },
-    completed: {
-      title: "Your Design is Ready!",
-      message: "Tap to see it.",
-      messageColor: "#D4D4D8",
-      messageBackgroundColor: "#2D2935",
-      visualContentType: "image",
-      visualContent: progressData.resultUrl,
-      visualContentBackgroundColor: "transparent",
-    },
-    failed: {
-      title: "Oops, something went wrong!",
-      message: "Click to try again.",
-      messageColor: "#D4D4D8",
-      messageBackgroundColor: "#EF4444",
-      visualContentType: "icon",
-      visualContent: <ErrorIcon />,
-      visualContentBackgroundColor: "#F37C7C",
-    },
-  };
+  const data = useMemo(() => {
+    return {
+      processing: {
+        ...JOB_STATUS_CONFIG.processing,
+        visualContent: null,
+      },
+      completed: {
+        ...JOB_STATUS_CONFIG.completed,
+        visualContent: progressData.resultUrl || null,
+      },
+      failed: {
+        ...JOB_STATUS_CONFIG.failed,
+        visualContent: null,
+      },
+    };
+  }, [progressData.resultUrl]);
 
-  const styleOptions = [
-    {
-      id: 0,
-      name: LogoStyleName[0],
-      image: null,
-    },
-    {
-      id: 1,
-      name: LogoStyleName[1],
-      imageUrl: "",
-      image: monogram,
-    },
-    {
-      id: 2,
-      name: LogoStyleName[2],
-      imageUrl: "",
-      image: abstract,
-    },
-    {
-      id: 3,
-      name: LogoStyleName[3],
-      imageUrl: "",
-      image: mascot,
-    },
-  ];
+  const styleOptions = useMemo(
+    () => [
+      {
+        id: 0,
+        name: LogoStyleName[0],
+        image: null,
+      },
+      {
+        id: 1,
+        name: LogoStyleName[1],
+        imageUrl: "",
+        image: monogram,
+      },
+      {
+        id: 2,
+        name: LogoStyleName[2],
+        imageUrl: "",
+        image: abstract,
+      },
+      {
+        id: 3,
+        name: LogoStyleName[3],
+        imageUrl: "",
+        image: mascot,
+      },
+    ],
+    [],
+  );
 
   useEffect(() => {
     return () => {
@@ -83,7 +72,7 @@ const useGenerateLogo = () => {
     };
   }, []);
 
-  const submitGenerateLogoRequest = async () => {
+  const submitGenerateLogoRequest = useCallback(async () => {
     if (progressData.status === JobStatus.PROCESSING) {
       Alert.alert("Please wait", "A job is already in progress. Please wait for it to complete.");
       return;
@@ -118,7 +107,7 @@ const useGenerateLogo = () => {
     } catch (_err) {
       Alert.alert("Something went wrong!");
     }
-  };
+  }, [progressData.status, prompt, selectedStyleId, userId, createJob, subscribeToJob]);
   return {
     jobId,
     progressData,
