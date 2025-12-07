@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import fireStoreService from "@/services/fireStoreService";
+import { jobService } from "@/services";
 import { useCallback, useRef, useState } from "react";
 import { Alert } from "react-native";
 import { ACTIVE_JOB_STATUSES, JobStatus } from "@/constants";
@@ -7,7 +7,7 @@ import { ACTIVE_JOB_STATUSES, JobStatus } from "@/constants";
 const useJobManager = () => {
   const [jobId, setJobId] = useState("");
   const [progressData, setProgressData] = useState({ status: JobStatus.IDLE });
-  const { createJob, subscribeToJob, getLatestJob } = fireStoreService;
+  const { createJob, subscribeToJob, getLatestJob } = jobService;
   const unsubscribeRef = useRef(null);
   const { userId } = useAuth();
 

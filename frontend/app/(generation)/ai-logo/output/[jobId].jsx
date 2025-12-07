@@ -1,6 +1,6 @@
 import gradient from "@/assets/images/background/gradient.png";
 import { LogoStyleName } from "@/constants";
-import fireStoreService from "@/services/fireStoreService";
+import { logoService } from "@/services";
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ const OutputScreen = () => {
 
   const { jobId } = useLocalSearchParams();
 
-  const { getLogoByJobId } = fireStoreService;
+  const { getLogoByJobId } = logoService;
 
   const copyToClipboard = async () => {
     if (logo?.prompt) {

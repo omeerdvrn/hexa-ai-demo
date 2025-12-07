@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import fireStoreService from "@/services/fireStoreService";
+import { logoService } from "@/services";
 import { useCallback, useEffect, useState } from "react";
 
 const useLogos = (limitCount = 20) => {
@@ -7,7 +7,7 @@ const useLogos = (limitCount = 20) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { userId } = useAuth();
-  const { getUserLogos, getLogo } = fireStoreService;
+  const { getUserLogos, getLogo } = logoService;
 
   const fetchUserLogos = useCallback(async () => {
     if (!userId) return;

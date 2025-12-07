@@ -1,5 +1,5 @@
 import { useTheme } from "@/contexts/ThemeContext";
-import fireStoreService from "@/services/fireStoreService";
+import { jobService } from "@/services";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
@@ -10,7 +10,7 @@ import ErrorIcon from "./ErrorIcon";
 const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
   const theme = useTheme();
   const router = useRouter();
-  const { markJobAsSeen } = fireStoreService;
+  const { markJobAsSeen } = jobService;
   const statusConfig = data[progressData.status];
 
   const renderVisualContent = () => {
