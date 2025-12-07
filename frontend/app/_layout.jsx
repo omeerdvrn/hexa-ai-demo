@@ -1,25 +1,29 @@
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import defaultTheme from "@/theme";
 import { Stack } from "expo-router";
 import { StyleSheet } from "react-native";
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <Stack
-        screenOptions={{
-          statusBarHidden: false,
-          headerShown: false,
-          contentStyle: style.container,
-        }}
-      >
-        <Stack.Screen name="index" />
-      </Stack>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Stack
+          screenOptions={{
+            statusBarHidden: false,
+            headerShown: false,
+            contentStyle: styles.container,
+          }}
+        >
+          <Stack.Screen name="index" />
+        </Stack>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    backgroundColor: "black",
+    backgroundColor: defaultTheme.colors.background.primary,
   },
 });

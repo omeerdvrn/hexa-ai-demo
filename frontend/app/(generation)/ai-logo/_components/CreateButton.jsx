@@ -1,15 +1,21 @@
+import { useTheme } from "@/contexts/ThemeContext";
+import { createThemedStyles } from "@/utils/styleHelpers";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import MagicIcon from "./MagicIcon";
 
 const CreateButton = ({ onPress }) => {
+  const theme = useTheme();
+  const styles = createThemedStyles(createStyles, theme);
+  const { colors, start, end, locations } = theme.tokens.gradients.primary;
+
   return (
     <View style={styles.createButtonContainer}>
       <LinearGradient
-        colors={["#2938DC", "#943DFF"]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0.25, y: 0 }}
-        locations={[1, 0.25]}
+        colors={colors}
+        start={start}
+        end={end}
+        locations={locations}
         style={styles.createButtonGradient}
       >
         <TouchableOpacity style={styles.createButton} onPress={onPress}>
@@ -23,30 +29,28 @@ const CreateButton = ({ onPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => ({
   createButtonContainer: {
     position: "absolute",
-    bottom: 10,
+    bottom: theme.spacing[2],
     width: "100%",
-    left: 24,
+    left: theme.spacing[6],
   },
   createButtonGradient: {
-    borderRadius: 50,
+    borderRadius: theme.borderRadius.full,
   },
   createButton: {
-    color: "white",
-    height: 50,
-    borderRadius: 50,
+    color: theme.colors.text.onPrimary,
+    height: theme.tokens.dimensions.button.height,
+    borderRadius: theme.borderRadius.full,
   },
   createButtonContent: {
     flexDirection: "row",
     margin: "auto",
   },
   createButtonText: {
-    color: "white",
-    fontSize: 17,
-    fontWeight: "bold",
-    marginRight: 8,
+    ...theme.typography.button,
+    marginRight: theme.spacing[2],
   },
 });
 

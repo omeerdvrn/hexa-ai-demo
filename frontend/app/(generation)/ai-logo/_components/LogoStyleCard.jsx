@@ -1,7 +1,12 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { createThemedStyles } from "@/utils/styleHelpers";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import NoStyleIcon from "./NoStyleIcon";
 
 const LogoStyleCard = ({ item, selectedStyleId, onPress }) => {
+  const theme = useTheme();
+  const styles = createThemedStyles(createStyles, theme);
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       {item.image ? (
@@ -28,21 +33,40 @@ const LogoStyleCard = ({ item, selectedStyleId, onPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: { width: 90, marginRight: 10 },
-  cardImage: { borderRadius: 13.71, marginHorizontal: "auto" },
-  cardImageSelected: { borderWidth: 2, borderColor: "white" },
+const createStyles = (theme) => ({
+  card: {
+    width: theme.tokens.dimensions.card.width,
+    marginRight: theme.spacing[2],
+  },
+  cardImage: {
+    borderRadius: theme.borderRadius.card,
+    marginHorizontal: "auto",
+  },
+  cardImageSelected: {
+    borderWidth: 2,
+    borderColor: theme.colors.interactive.borderSelected,
+  },
   cardNoStyle: {
-    width: 90,
-    height: 90,
-    borderRadius: 13.71,
-    backgroundColor: "#292B57",
+    width: theme.tokens.dimensions.card.width,
+    height: theme.tokens.dimensions.card.height,
+    borderRadius: theme.borderRadius.card,
+    backgroundColor: theme.colors.background.tertiary,
     justifyContent: "center",
     alignItems: "center",
   },
-  cardNoStyleSelected: { borderWidth: 2, borderColor: "white" },
-  logoStyleName: { fontSize: 13, marginHorizontal: "auto", color: "#71717A", marginTop: 5 },
-  logoStyleNameSelected: { color: "white" },
+  cardNoStyleSelected: {
+    borderWidth: 2,
+    borderColor: theme.colors.interactive.borderSelected,
+  },
+  logoStyleName: {
+    fontSize: theme.tokens.typography.fontSize.sm,
+    marginHorizontal: "auto",
+    color: theme.colors.text.secondary,
+    marginTop: theme.spacing[1],
+  },
+  logoStyleNameSelected: {
+    color: theme.colors.text.primary,
+  },
 });
 
 export default LogoStyleCard;

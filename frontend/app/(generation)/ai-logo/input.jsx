@@ -1,4 +1,6 @@
-import { Keyboard, Pressable, StyleSheet } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { createThemedStyles } from "@/utils/styleHelpers";
+import { Keyboard, Pressable } from "react-native";
 import { JobStatus } from "../../../constants";
 import CreateButton from "./_components/CreateButton";
 import GenerationStatusChip from "./_components/GenerationStatusChip";
@@ -7,6 +9,8 @@ import PromptInput from "./_components/PromptInput";
 import useGenerateLogo from "./_hooks/useGenerateLogo";
 
 const InputScreen = () => {
+  const theme = useTheme();
+  const styles = createThemedStyles(createStyles, theme);
   const {
     progressData,
     prompt,
@@ -44,10 +48,9 @@ const InputScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => ({
   container: {
-    paddingHorizontal: 24,
-    height: "95%",
+    ...theme.layout.container,
   },
 });
 

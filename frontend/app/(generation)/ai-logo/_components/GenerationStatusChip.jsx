@@ -1,3 +1,4 @@
+import { useTheme } from "@/contexts/ThemeContext";
 import fireStoreService from "@/services/fireStoreService";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -7,16 +8,14 @@ import { JobStatus } from "../../../../constants";
 import ErrorIcon from "./ErrorIcon";
 
 const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
+  const theme = useTheme();
   const router = useRouter();
   const { markJobAsSeen } = fireStoreService;
   const statusConfig = data[progressData.status];
 
   const renderVisualContent = () => {
     const containerStyle = {
-      width: 70,
-      height: 70,
-      borderTopLeftRadius: 13.71,
-      borderBottomLeftRadius: 13.71,
+      ...theme.components.statusChip.visual,
     };
 
     switch (statusConfig.visualContentType) {
@@ -74,12 +73,7 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
 
   const isCompleted = progressData.status === JobStatus.COMPLETED;
   const containerStyle = {
-    width: "100%",
-    height: 70,
-    borderRadius: 16,
-    flexDirection: "row",
-    marginTop: 10,
-    marginBottom: 10,
+    ...theme.components.statusChip.container,
   };
 
   const content = (
@@ -91,12 +85,24 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
           height: "100%",
           width: "100%",
           margin: "auto",
-          paddingLeft: 10,
+          paddingLeft: theme.spacing[2],
           justifyContent: "center",
         }}
       >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: 800 }}>{statusConfig.title}</Text>
-        <Text style={{ color: statusConfig.messageColor, fontSize: 13 }}>
+        <Text
+          style={{
+            ...theme.typography.body,
+            fontWeight: theme.tokens.typography.fontWeight.extrabold,
+          }}
+        >
+          {statusConfig.title}
+        </Text>
+        <Text
+          style={{
+            color: statusConfig.messageColor,
+            fontSize: theme.tokens.typography.fontSize.sm,
+          }}
+        >
           {statusConfig.message}
         </Text>
       </View>
@@ -107,10 +113,10 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
     <Pressable onPress={handlePress}>
       {isCompleted ? (
         <LinearGradient
-          colors={["#2938DC", "#943DFF"]}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0.25, y: 0 }}
-          locations={[1, 0.25]}
+          colors={theme.tokens.gradients.primary.colors}
+          start={theme.tokens.gradients.primary.start}
+          end={theme.tokens.gradients.primary.end}
+          locations={theme.tokens.gradients.primary.locations}
           style={containerStyle}
         >
           {content}

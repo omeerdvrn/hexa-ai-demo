@@ -1,7 +1,11 @@
+import { useTheme } from "@/contexts/ThemeContext";
+import { createThemedStyles } from "@/utils/styleHelpers";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { getRandomPrompt } from "../../../../constants";
 const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
+  const theme = useTheme();
+  const styles = createThemedStyles(createStyles, theme);
   const [focused, setFocused] = useState(false);
 
   const setPromptWithLengthLimit = (newPrompt) => {
@@ -17,25 +21,10 @@ const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
 
   return (
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginVertical: 12,
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.headerContainer}>
         <Text style={styles.promptLabel}>Enter Your Prompt</Text>
         <TouchableOpacity onPress={surpriseMe}>
-          <Text
-            style={{
-              color: "#FFFFFF",
-              fontSize: 13,
-              fontWeight: "thin",
-            }}
-          >
-            🎲 Surprise me
-          </Text>
+          <Text style={styles.surpriseMeText}>🎲 Surprise me</Text>
         </TouchableOpacity>
       </View>
       <TextInput
@@ -43,7 +32,7 @@ const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
         value={prompt}
         onChangeText={setPromptWithLengthLimit}
         placeholder="A blue lion logo reading 'HEXA' in bold letters"
-        placeholderTextColor="rgba(255, 255, 255, 0.4)"
+        placeholderTextColor={theme.colors.text.placeholder}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         multiline
@@ -59,36 +48,37 @@ const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  promptLabel: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontWeight: "800",
+const createStyles = (theme) => ({
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: theme.spacing[3],
+    alignItems: "center",
   },
-  gradientBackground: {
-    borderRadius: 16,
+  promptLabel: {
+    color: theme.colors.text.primary,
+    fontSize: theme.tokens.typography.fontSize.xl,
+    fontWeight: theme.tokens.typography.fontWeight.extrabold,
+  },
+  surpriseMeText: {
+    color: theme.colors.text.primary,
+    fontSize: theme.tokens.typography.fontSize.sm,
+    fontWeight: theme.tokens.typography.fontWeight.thin,
   },
   input: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    borderRadius: 16,
-    padding: 16,
-    minHeight: 175,
-    textAlignVertical: "top",
-    height: "auto",
-    backgroundColor: "#2A2834",
-    paddingBottom: 28,
+    ...theme.typography.body,
+    ...theme.components.input.default,
+    paddingBottom: theme.spacing[6] + theme.spacing[1],
   },
   inputFocused: {
-    borderWidth: "1",
-    borderColor: "white",
+    borderWidth: 1,
+    borderColor: theme.components.input.default.focusedBorderColor,
   },
   charCount: {
     position: "absolute",
-    bottom: 12,
-    left: 16,
-    color: "rgba(255, 255, 255, 0.3)",
-    fontSize: 12,
+    bottom: theme.spacing[3],
+    left: theme.spacing[4],
+    ...theme.typography.caption,
   },
 });
 
