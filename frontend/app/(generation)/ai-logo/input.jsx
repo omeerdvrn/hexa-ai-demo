@@ -18,6 +18,12 @@ const InputScreen = () => {
     retrySubmitGenerateLogoRequest,
     submitGenerateLogoRequest,
   } = useGenerateLogo();
+
+  const submit = () => {
+    if (prompt && prompt.trim() !== "") {
+      submitGenerateLogoRequest();
+    }
+  };
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
       {progressData.status !== JobStatus.IDLE && (
@@ -33,7 +39,7 @@ const InputScreen = () => {
         setSelectedStyleId={setSelectedStyleId}
         options={styleOptions}
       />
-      <CreateButton onPress={submitGenerateLogoRequest} />
+      <CreateButton onPress={submit} />
     </Pressable>
   );
 };

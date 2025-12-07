@@ -9,6 +9,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
@@ -24,6 +25,7 @@ const firestoreService = {
         status: JobStatus.PROCESSING,
         prompt: jobData.prompt,
         style: jobData.style || 0,
+        seen: false,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         resultUrl: null,
@@ -114,6 +116,20 @@ const firestoreService = {
       return null;
     } catch (error) {
       console.error("Error getting latest job:", error);
+      throw error;
+    }
+  },
+
+  markJobAsSeen: async (jobId) => {
+    try {
+      const jobRef = doc(db, Collections.JOBS, jobId);
+      await updateDoc(jobRef, {
+        seen: true,
+        updatedAt: serverTimestamp(),
+      });
+      console.log("Job marked as seen:", jobId);
+    } catch (error) {
+      console.error("Error marking job as seen:", error);
       throw error;
     }
   },

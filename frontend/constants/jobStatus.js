@@ -16,6 +16,11 @@ export const JobStatus = Object.freeze({
 export const JOB_STATUSES = Object.freeze(Object.values(JobStatus));
 
 /**
+ * Array of all active job status values that needs to be subscribed
+ */
+export const ACTIVE_JOB_STATUSES = Object.freeze([JobStatus.PROCESSING]);
+
+/**
  * Config data of job statuses
  */
 export const JOB_STATUS_CONFIG = Object.freeze({

@@ -5,7 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import fireStoreService from "@/services/fireStoreService";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert } from "react-native";
-import { JOB_STATUS_CONFIG, JobStatus, LogoStyleName } from "../../../../constants";
+import {
+  ACTIVE_JOB_STATUSES,
+  JOB_STATUS_CONFIG,
+  JobStatus,
+  LogoStyleName,
+} from "../../../../constants";
 
 const useGenerateLogo = () => {
   const [jobId, setJobId] = useState("");
@@ -135,13 +140,49 @@ const useGenerateLogo = () => {
   }, [progressData.status, prompt, selectedStyleId, userId, createJob, subscribeToJob]);
 
   useEffect(() => {
+    const checkForUnseenJob = async () => {
+      if (!userId) return;
+
+      try {
+        const latestJob = await getLatestJob(userId);
+        if (latestJob && !latestJob.seen) {
+          setJobId(latestJob.id);
+          setProgressData({
+            jobId: latestJob.id,
+            status: latestJob.status,
+            resultUrl: latestJob.resultUrl,
+            error: latestJob.error,
+            seen: latestJob.seen,
+          });
+
+          if (ACTIVE_JOB_STATUSES.some((s) => s === latestJob.status)) {
+            unsubscribeRef.current = subscribeToJob(latestJob.id, (jobData, error) => {
+              if (!jobData || error) {
+                setProgressData({ status: JobStatus.FAILED });
+                return;
+              }
+
+              setProgressData({
+                jobId: latestJob.id,
+                ...jobData,
+              });
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error checking for unseen job:", error);
+      }
+    };
+
+    checkForUnseenJob();
+
     return () => {
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
         unsubscribeRef.current = null;
       }
     };
-  }, []);
+  }, [userId, getLatestJob, subscribeToJob]);
 
   return {
     jobId,

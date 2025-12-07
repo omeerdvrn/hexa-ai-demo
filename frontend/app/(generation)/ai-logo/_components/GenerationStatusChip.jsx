@@ -1,3 +1,4 @@
+import fireStoreService from "@/services/fireStoreService";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
@@ -7,6 +8,7 @@ import ErrorIcon from "./ErrorIcon";
 
 const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
   const router = useRouter();
+  const { markJobAsSeen } = fireStoreService;
   const statusConfig = data[progressData.status];
 
   const renderVisualContent = () => {
@@ -57,11 +59,15 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
     }
   };
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (progressData.status === JobStatus.FAILED && progressData.jobId) {
       retryCallback();
     }
     if (progressData.status === JobStatus.COMPLETED && progressData.jobId) {
+      console.log(progressData);
+      if (!progressData?.seen) {
+        await markJobAsSeen(progressData.jobId);
+      }
       router.push(`ai-logo/output/${progressData.jobId}`);
     }
   };
