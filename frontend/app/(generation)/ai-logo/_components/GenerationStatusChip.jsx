@@ -3,7 +3,7 @@ import fireStoreService from "@/services/fireStoreService";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
-import { JobStatus } from "../../../../constants";
+import { JobStatus } from "@/constants";
 
 import ErrorIcon from "./ErrorIcon";
 

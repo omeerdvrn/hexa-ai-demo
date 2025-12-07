@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth, onAuthStateChanged, signInAnonymously } from "../config/firebaseConfig";
+import { auth, onAuthStateChanged, signInAnonymously } from "@/config/firebaseConfig";
 
 const AuthContext = createContext({});
 

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
-import { LogoStyleName } from "../../../../constants";
+import { LogoStyleName } from "@/constants";
 
 const OutputScreen = () => {
   const [job, setJob] = useState(null);

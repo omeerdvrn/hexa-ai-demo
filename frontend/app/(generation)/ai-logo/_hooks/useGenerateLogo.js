@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { JOB_STATUS_CONFIG, LOGO_STYLE_OPTIONS } from "../../../../constants";
-import useJobManager from "./useJobManager";
+import { JOB_STATUS_CONFIG, LOGO_STYLE_OPTIONS } from "@/constants";
+import { useJobManager } from "@/hooks";
 
 const useGenerateLogo = () => {
   const [prompt, setPrompt] = useState("");

@@ -2,7 +2,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { createThemedStyles } from "@/utils/styleHelpers";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { getRandomPrompt } from "../../../../constants";
+import { getRandomPrompt } from "@/constants";
 const PromptInput = ({ prompt, setPrompt, lengthLimit }) => {
   const theme = useTheme();
   const styles = createThemedStyles(createStyles, theme);

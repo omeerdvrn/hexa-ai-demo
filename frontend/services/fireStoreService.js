@@ -12,8 +12,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../config/firebaseConfig";
-import { Collections, JobStatus } from "../constants";
+import { db } from "@/config/firebaseConfig";
+import { Collections, JobStatus } from "@/constants";
 
 const firestoreService = {
   createJob: async (userId, jobData) => {

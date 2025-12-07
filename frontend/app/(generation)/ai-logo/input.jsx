@@ -1,7 +1,7 @@
 import { useTheme } from "@/contexts/ThemeContext";
 import { createThemedStyles } from "@/utils/styleHelpers";
 import { Keyboard, Pressable } from "react-native";
-import { JobStatus } from "../../../constants";
+import { JobStatus } from "@/constants";
 import CreateButton from "./_components/CreateButton";
 import GenerationStatusChip from "./_components/GenerationStatusChip";
 import LogoStyleSelector from "./_components/LogoStyleSelector";
