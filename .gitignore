@@ -15,3 +15,6 @@ __pycache__/
 .expo-shared/
 
 .env
+
+/frontend/.env
+/backend/.env
