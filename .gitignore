@@ -13,3 +13,5 @@ __pycache__/
 # Expo cache if accidentally created in root
 .expo/
 .expo-shared/
+
+.env
