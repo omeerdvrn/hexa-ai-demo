@@ -8,6 +8,7 @@ export const JobStatus = Object.freeze({
   PROCESSING: "processing",
   COMPLETED: "completed",
   FAILED: "failed",
+  CANCELLED: "cancelled",
 });
 
 /**
@@ -19,6 +20,8 @@ export const JOB_STATUSES = Object.freeze(Object.values(JobStatus));
  * Array of all active job status values that needs to be subscribed
  */
 export const ACTIVE_JOB_STATUSES = Object.freeze([JobStatus.PROCESSING]);
+
+export const INACTIVE_JOB_STATUSES = Object.freeze([JobStatus.IDLE, JobStatus.CANCELLED]);
 
 /**
  * Config data of job statuses

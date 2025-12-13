@@ -1,7 +1,8 @@
 import os
 from datetime import datetime, timezone
-from firebase_functions import firestore_fn, scheduler_fn, options
-from firebase_admin import initialize_app, firestore, auth
+from firebase_functions import firestore_fn, scheduler_fn, options, https_fn
+from typing import Dict, Any
+from firebase_admin import initialize_app, firestore
 from dotenv import load_dotenv
 from services import JobService
 
@@ -18,7 +19,7 @@ def get_firestore_client():
 
 @firestore_fn.on_document_created(
     document="jobs/{job_id}",
-    region=DEPLOYMENT_REGION
+    region="europe-west1"
 )
 def process_job(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> None:
     db = get_firestore_client()
@@ -37,3 +38,4 @@ def process_job(event: firestore_fn.Event[firestore_fn.DocumentSnapshot]) -> Non
         
     except Exception:
         pass
+

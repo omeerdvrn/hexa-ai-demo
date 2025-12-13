@@ -32,6 +32,17 @@ class JobService:
 
         return True, None
     
+    def check_cancellation(self, job_id: str) -> bool:
+        try:
+            job_ref = self.db.collection("jobs").document(job_id)
+            job_doc = job_ref.get()
+            if job_doc.exists:
+                job_data = job_doc.to_dict()
+                return job_data.get("status") == "cancelled"
+            return False
+        except Exception:
+            return False
+    
     def process_job(self, job_id: str, job_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Process a job based on its type
@@ -48,10 +59,16 @@ class JobService:
             if not is_valid:
                 return self._create_error_result(error_message)
             
+            if self.check_cancellation(job_id):
+                return {"resultUrl": "", "cancelled": True}
+            
             job_type = job_data.get("type", "logo")
             
             if job_type == "logo":
-                result = self.image_service.generate_and_store_logo(job_id, job_data["prompt"])
+                result = self.image_service.generate_and_store_logo(job_id, job_data["prompt"], self)
+                
+                if result.get("cancelled"):
+                    return result
                 
                 if not result.get("error") and result.get("resultUrl"):
                     self._create_logo_document(job_id, job_data, result)
@@ -74,7 +91,10 @@ class JobService:
             result: Processing result containing status and data
         """
         try:
-            status = "failed" if result.get("error") else "completed"
+            if result.get("cancelled"):
+                status = "cancelled"
+            else:
+                status = "failed" if result.get("error") else "completed"
             
             update_data = {
                 "status": status,

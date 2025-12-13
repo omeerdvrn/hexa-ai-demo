@@ -1,11 +1,12 @@
 import Loader from "@/components/Loader";
+import { db } from "@/config/firebaseConfig";
 import { JobStatus } from "@/constants";
 import { useTheme } from "@/contexts/ThemeContext";
 import { jobService } from "@/services";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Image, Pressable, Text, View } from "react-native";
-
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import ErrorIcon from "./ErrorIcon";
 
 const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
@@ -13,6 +14,22 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
   const router = useRouter();
   const { markJobAsSeen } = jobService;
   const statusConfig = data[progressData.status];
+
+  const cancelJob = async () => {
+    try {
+      console.log("Cancelling job:", progressData.jobId);
+
+      const jobRef = doc(db, "jobs", progressData.jobId);
+      await updateDoc(jobRef, {
+        status: "cancelled",
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log("Job cancelled successfully");
+    } catch (error) {
+      console.error("Error cancelling job:", error);
+    }
+  };
 
   const renderVisualContent = () => {
     const containerStyle = {
@@ -106,6 +123,20 @@ const GenerationStatusChip = ({ data, progressData, retryCallback }) => {
         >
           {statusConfig.message}
         </Text>
+
+        {progressData.status === JobStatus.PROCESSING && (
+          <TouchableOpacity onPress={cancelJob}>
+            <Text
+              style={{
+                color: statusConfig.messageColor,
+                fontSize: theme.tokens.typography.fontSize.sm,
+                textDecorationLine: "underline",
+              }}
+            >
+              Cancel
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </>
   );

@@ -12,7 +12,7 @@ class ImageService:
     def __init__(self, timeout: int = 30):
         self.timeout = timeout
     
-    def generate_mock_image_url(self, job_id: str, prompt: str) -> str:
+    def generate_mock_image_url(self, job_id: str, prompt: str, job_service=None) -> str:
         """
         Generate a mock image URL using external service
         
@@ -28,7 +28,14 @@ class ImageService:
         """
         try:
             processing_time = self._calculate_processing_time(prompt)
-            time.sleep(processing_time)
+            
+            sleep_intervals = max(1, processing_time // 5)
+            sleep_duration = processing_time / sleep_intervals
+            
+            for _ in range(sleep_intervals):
+                if job_service and job_service.check_cancellation(job_id):
+                    raise Exception("Job cancelled")
+                time.sleep(sleep_duration)
             
             if self._should_simulate_failure():
                 raise Exception("AI generation failed")
@@ -68,7 +75,7 @@ class ImageService:
             error_msg = f"Failed to upload image: {str(e)}"
             return self._create_error_result(error_msg)
     
-    def generate_and_store_logo(self, job_id: str, prompt: str) -> Dict[str, Any]:
+    def generate_and_store_logo(self, job_id: str, prompt: str, job_service=None) -> Dict[str, Any]:
         """
         Complete pipeline: generate image and store it
         
@@ -80,12 +87,17 @@ class ImageService:
             Dictionary containing final result
         """
         try:
-            ai_image_url = self.generate_mock_image_url(job_id, prompt)
+            ai_image_url = self.generate_mock_image_url(job_id, prompt, job_service)
+            
+            if job_service and job_service.check_cancellation(job_id):
+                return {"resultUrl": "", "cancelled": True}
             
             result = self.store_image_from_url(ai_image_url, job_id, "logo")
             return result
             
         except Exception as e:
+            if "Job cancelled" in str(e):
+                return {"resultUrl": "", "cancelled": True}
             error_msg = f"Logo generation pipeline failed: {str(e)}"
             return self._create_error_result(error_msg)
     

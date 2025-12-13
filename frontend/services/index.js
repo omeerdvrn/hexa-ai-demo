@@ -3,19 +3,19 @@
  * Provides clean, organized access to database operations
  */
 
-export { default as jobService } from "./jobService";
-export { default as logoService } from "./logoService";
-
 // For backward compatibility, you can also create a combined service
 // that exports all methods (optional)
 import jobService from "./jobService";
 import logoService from "./logoService";
 
+export { default as jobService } from "./jobService";
+export { default as logoService } from "./logoService";
+
 export const firestoreService = {
   // Job methods
   ...jobService,
-  
-  // Logo methods  
+
+  // Logo methods
   ...logoService,
 };
 

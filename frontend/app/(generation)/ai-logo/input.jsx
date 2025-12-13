@@ -1,7 +1,7 @@
 import { useTheme } from "@/contexts/ThemeContext";
 import { createThemedStyles } from "@/utils/styleHelpers";
 import { Keyboard, Pressable } from "react-native";
-import { JobStatus } from "@/constants";
+import { INACTIVE_JOB_STATUSES } from "../../../constants/jobStatus";
 import CreateButton from "./_components/CreateButton";
 import GenerationStatusChip from "./_components/GenerationStatusChip";
 import LogoStyleSelector from "./_components/LogoStyleSelector";
@@ -30,7 +30,7 @@ const InputScreen = () => {
   };
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-      {progressData.status !== JobStatus.IDLE && (
+      {!INACTIVE_JOB_STATUSES.includes(progressData.status) && (
         <GenerationStatusChip
           data={data}
           progressData={progressData}
